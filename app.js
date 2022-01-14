@@ -17,19 +17,38 @@
               /* Method Request express.js */
               
               /*  Request apa yang dikirimkan ke express
-                  Respon apa yang dikembalikan oleh express
+              Respon apa yang dikembalikan oleh express
               */
+             
+             
+             /* Web Server With Express.js */
 
 
-       /* Web Server With Express.js */
+
+            // Middlewere
+             /* app.use((req, res, next) => {
+                 console.log('Ini adalah middlewere ke dua');
+                 next(); 
+             }); */
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const port = 3000;
 
+/* Aplication Level Middleware */
+app.use((req, res, next) => {
+    console.log('Time: ', Date.now());
+    next();
+});
+
+
 // Gunakan ejs 
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
+
+// Built in middlewere
+app.use(express.static('public'));
+
 
 /* Berbagai Respon yang dapat diggunakan oleh express */
 app.get('/', (req, res) => {
@@ -61,8 +80,9 @@ app.get('/', (req, res) => {
 app.get('/about', (req, res) => {
     // res.sendFile('./about.html', {root: __dirname});
     res.render('about', {
+        title: 'Halaman About',
         layout: 'layouts/main-layout', 
-        title: 'Halaman About'});
+    });
 });
 app.get('/contact', (req, res) => {
     // res.send('This is a contact page!');
@@ -78,7 +98,12 @@ app.get('/product/:id', (req, res) => {
 }); 
 
 
+app.use((req, res) => {
+    res.status(404);
+    res.send('<h1>404</h1>');
+});
+
 app.listen(port, () => {
-    console.log(`Example app listening att https://localhost:${port}`)
+    console.log(`Example app listening att https://localhost:${port}`);
 });
 
